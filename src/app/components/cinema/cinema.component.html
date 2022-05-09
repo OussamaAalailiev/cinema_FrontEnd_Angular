@@ -86,17 +86,20 @@
                             <div class="p-3" *ngIf="ticketsSelected.length>0">
                               <div class="card " [hidden]="submitted">
                                 <div class="card-header centerBoldTitle">Entry Form</div>
+                                <br>
                                 <div class="card-body">
                                   <form #f="ngForm" (ngSubmit)="onBuyTickets(f.value)"> <!-- Should be added => (ngSubmit)="onBuyTickets()" -->
-                                    <div class="input-group"><!-- 'f.value': Contains form's Data. -->
-                                      <label class="input-group-text">Client Name:</label>
-                                      <input ngModel class="form-control-lg" type="text" name="clientName" placeholder="Enter your name">
+                                    <div class="input-group-sm"><!-- 'f.value': Contains form's Data. -->
+                                      <label class="input-group-text boldText">Client Name:</label>
+                                      <input ngModel class="form-control" type="text" name="clientName" placeholder="Enter your name here">
                                     </div>
-                                    <div class="input-group p-2">
-                                      <label class="input-group-text w-auto">Payment Code:</label>
-                                      <input ngModel class="form-control-lg" type="number" name="paymentCode" placeholder="Enter your Payment Code">
+                                    <br>
+                                    <div class="input-group-sm ">
+                                      <label class="input-group-text boldText">Payment Code:</label>
+                                      <input ngModel class="form-control" type="number" name="paymentCode" placeholder="Enter your Payment Code here">
                                     </div>
-                                    <button class="btn btn-success" type="submit">Buy your Ticket(s)!</button>
+                                    <br>
+                                    <button class="btn btn-success p-3" type="submit">Buy your Ticket(s)!</button>
                                   </form>
                                 </div>
                               </div>
