@@ -1,0 +1,7 @@
+.clickable{
+  cursor: pointer;
+}
+.centerBoldTitle{
+  text-align: center;
+  font-weight: bold;
+}

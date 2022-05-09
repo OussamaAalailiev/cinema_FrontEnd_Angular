@@ -1,0 +1,134 @@
+<div class="container mt-3">
+<!--  <label class="centerBoldTitle"> List Of Cities</label>-->
+  <div class="row">
+    <!-- Displaying Cities at first, gotten from Backend. -->
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-header centerBoldTitle">List Of Cities</div>
+        <div class="card-body">
+          <ul *ngIf="cities" class="list-group">
+            <li [ngClass]="c==currentCity?'active':''" *ngFor="let c of cities._embedded.cities"
+                class="list-group-item clickable" (click)="onClickGetCinemasOfOneCity(c)">
+              {{c.name}}
+            </li>
+          </ul>
+        </div>
+      </div>
+<!--      <ul *ngIf="cities" class="list-group">-->
+<!--        <li [ngClass]="c==currentCity?'active':''" *ngFor="let c of cities._embedded.cities"-->
+<!--            class="list-group-item clickable" (click)="onClickGetCinemasOfOneCity(c)">-->
+<!--          {{c.name}}-->
+<!--        </li>-->
+<!--      </ul>-->
+    </div>
+    <!-- Displaying Cinemas for each 1 City gotten from Backend. -->
+    <div class="col-md-9" *ngIf="cinemas">
+      <div class="card">
+        <div class="card-header centerBoldTitle">List Of Cinemas</div>
+        <div class="card-body">
+              <div class="row ">
+                  <ul class="nav nav-pills">
+                    <li  class="nav-item clickable"
+                        *ngFor="let cinema of cinemas._embedded.cinemas" >
+                      <a (click)="onGetRoomsByOneCinema(cinema)" class="nav-link"
+                         [ngClass]="cinema==currentCinema?'active clickable':''">{{cinema.name}}</a>
+                    </li>
+                  </ul>
+              </div>
+
+          <!-- Displaying Projections Of Films for each 1 Room gotten from Backend. -->
+          <div class="container">
+            <div class="row" *ngIf="rooms">
+              <div class="col-6 p-3" *ngFor="let room of rooms._embedded.rooms">
+
+                <div class="card">
+                  <div class="card-header centerBoldTitle">
+                    {{room.name}}
+                  </div>
+
+                    <div class="card-body" *ngIf="room.projectionOfFilmRooms">
+                      <div class="row">
+                      <div class="col-md-6">
+                        <!-- For each 1 'Room' & 'group of FilmSession's I get randomly 1 Film Image for them in each 1 Card: -->
+                        <img class="img-fluid" src="{{host+'/filmImage/'+room.projectionOfFilmRooms._embedded.projectionOfFilmRooms[0].film.id}}">
+                      </div>
+                      <div class="col-md-6">
+                        <ul class="list-group">
+                          <li class="list-group-item centerBoldTitle">Film Sessions:</li>
+                          <!--  'projectionOfFilmRooms' Object could be replaced interchangeably with Object 'currentFilmSession': -->
+                          <li [ngClass]="p==currentFilmSession?'active':''" class="list-group-item clickable"
+                              (click)="onGetTicketsOfPlacesOfFilmSession(p)"
+                              *ngFor="let p of room.projectionOfFilmRooms._embedded.projectionOfFilmRooms">
+                            Time: {{p.filmSession.hourDebut}} Price: {{p.price}} DH
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                      <!-- Display of Tickets: -->
+                      <!-- Error should be fixed: "Cannot read properties of undefined (reading 'tickets')" -->
+                      <div *ngIf="currentFilmSession">
+                        <!-- To display only Tickets that corresponds to a Specific currentFilmSession 'ex: 15:00:00' of a Specific Room's ID 'ex: Room N°1': -->
+                        <div *ngIf="currentFilmSession.room.id==room.id">
+
+<!--                          <div class="row" *ngIf="currentFilmSession.tickets._embedded.tickets">-->
+                          <div class="row" *ngIf="currentFilmSession.tickets">
+                            <label class="centerBoldTitle">List of Tickets!</label>
+                            <span>
+<!--                            <button [ngClass]="ticket.reserved==true?'btn btn-secondary':'btn btn-warning'" class="btn btn-warning m-1 btn-sm" *ngFor="let ticket of currentFilmSession.tickets._embedded.tickets">-->
+                              <button (click)="onGetSelectTicket(ticket)" class="{{getTicketBTNClass(ticket)}}"
+                                      *ngFor="let ticket of currentFilmSession.tickets._embedded.tickets" [disabled]="ticket.reserved">
+                                <span *ngIf="ticket">{{ticket.place.placeNumber!}}</span>
+                              </button>
+                            </span>
+                          </div>
+
+<!--                          <div *ngIf="ticketsSelected ">-->
+                            <div class="p-3" *ngIf="ticketsSelected.length>0">
+                              <form [hidden]="submitted" #f="ngForm" (ngSubmit)="onBuyTickets(f.value)"> <!-- Should be added => (ngSubmit)="onBuyTickets()" -->
+                                <div class="input-group"><!-- 'f.value': Contains form's Data. -->
+                                  <label class="input-group-text">Client Name:</label>
+                                  <input ngModel class="form-control-lg" type="text" name="clientName" placeholder="Enter your name">
+                                </div>
+                                <div class="input-group p-2">
+                                  <label class="input-group-text w-auto">Payment Code:</label>
+                                  <input ngModel class="form-control-lg" type="number" name="paymentCode" placeholder="Enter your Payment Code">
+                                </div>
+                                <button class="btn btn-success" type="submit">Buy your Ticket(s)!</button>
+                              </form>
+                            </div>
+<!--                          </div>-->
+
+                        </div>
+                      </div>
+<!--                      <div *ngIf="currentFilmSession">-->
+<!--                          <div class="row" *ngIf="currentFilmSession._embedded.tickets">-->
+<!--                            <button *ngFor="let ticket of currentFilmSession._embedded.tickets">{{ticket.place.placeNumber}}</button>-->
+<!--                          </div>-->
+<!--                      </div>-->
+                    </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  <div class="row" *ngIf="rooms">-->
+<!--    <div class="col-4 p-3" *ngFor="let room of rooms._embedded.rooms">-->
+
+<!--        <div class="card">-->
+<!--          <div class="card-header">-->
+<!--            {{room.name}}-->
+<!--          </div>-->
+<!--          <div class="card-body" *ngIf="room.projectionOfFilmRooms">-->
+<!--            <img class="w-25" src="{{host+'/filmImage/'+room.projectionOfFilmRooms._embedded.projectionOfFilmRooms[0].film.id}}">-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--  </div>-->
